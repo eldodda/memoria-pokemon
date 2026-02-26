@@ -1,119 +1,144 @@
-/* Configurações Globais */
 :root {
   --pk-red: #ff0000;
   --pk-blue: #3b4cca;
   --pk-yellow: #ffde00;
-  --bg-color: #121212; /* Um pouco mais escuro para profundidade */
+  --bg-color: #121212;
 }
 
 body {
   background-color: var(--bg-color);
-  color: white;
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh; /* Garante centralização vertical na tela toda */
+  padding: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  height: 100%;
+  width: 100%;
+  position: fixed;
 }
 
 .App {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  max-width: 500px; /* Ideal para formato de celular */
-  padding: 15px;
+  padding: 10px;
+  width: 100vw;
+  height: 100vh;
   box-sizing: border-box;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(75, 75, 75, 0.7)), url('/bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-/* Título */
-.titulo {
+.header-jogo {
   width: 100%;
-  max-width: 300px;
-  margin-bottom: 20px;
+  max-width: 400px;
+  margin-bottom: 15px;
 }
 
-.titulo img {
-  width: 100%;
-  height: auto;
-  filter: drop-shadow(0 0 8px rgba(255, 222, 0, 0.3)); /* Brilho suave */
+.titulo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
-/* Botão Novo Jogo - Estilo "Cápsula" */
-.new-game {
-  background-color: transparent;
-  border: 2px solid var(--pk-yellow);
-  padding: 12px 30px;
-  border-radius: 50px; /* Estilo pílula */
-  color: var(--pk-yellow);
-  font-size: 1.1rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 25px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+.img-titulo {
+  height: 50px;
+  width: auto;
 }
 
-.new-game:hover {
-  background-color: var(--pk-yellow);
-  color: #000;
-  transform: translateY(-2px);
+.btn-refresh {
+  background: #f9fbc7;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
 }
 
-/* Grid das Cartas - Responsivo */
+.btn-refresh:active {
+  transform: scale(0.95);
+
+}
+
+.btn-refresh img {
+  width: 20px;
+  height: 20px;
+}
+
+.recorde-badge {
+  background-image: linear-gradient(rgba(40, 40, 40, 0.7), rgb(0, 0, 0));
+  text-align: center;
+  font-size: 0.9rem;
+  color: #d9d9d9;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
   width: 100%;
-  perspective: 1000px; /* Prepara para animações 3D no futuro */
+  max-width: 350px;
+  margin: 0 auto;
 }
 
-.card img {
+.card-container {
+  perspective: 1000px;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.card-front {
+  transform: rotateY(180deg);
+}
+
+.card-front img,
+.card-back img {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  background-color: #1e1e1e;
-  border: 2px solid #333;
-  border-radius: 10px;
-  padding: 8px;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
+  display: block;
 }
 
-/* Quando a carta é selecionada ou combinada, ganha uma borda colorida */
-.card:hover img {
-  border-color: var(--pk-blue);
-}
-
-/* Stats (Turnos e Recorde) */
-.stats {
-  margin-top: 30px;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 15px 40px;
-  border-radius: 15px;
-  border: 1px solid #333;
-  width: fit-content;
-}
-
-.stats p {
-  margin: 5px 0;
-  font-size: 1rem;
-  color: #aaa;
-  font-weight: 500;
-}
-
-.stats p:last-child {
-  color: var(--pk-yellow); /* Destaque para o recorde */
-}
-
-/* Mobile Adjustment */
 @media (max-width: 400px) {
   .card-grid {
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
-  }
-  .card img {
-    padding: 5px;
   }
 }

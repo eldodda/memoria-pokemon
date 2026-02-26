@@ -3,30 +3,39 @@ import { useGame } from "./hooks/useGame.js";
 import './App.css';
 
 function App() {
-    const { cartas, shuffleCards, turno, handleChoice, choice1, choice2, recorde } = useGame();
-    useEffect(() => {
-        shuffleCards();
-    }, []);
+    const { cartas, shuffleCards, faseAtual, handleChoice, choice1, choice2, recorde } = useGame();
 
     return (
         <div className="App">
-            <div className="titulo">
-                <img src="/titulo.png" />
-            </div>
-            <button className="new-game" onClick={shuffleCards}>Novo jogo</button>
-
+            <header className="header-jogo">
+                <div className="titulo-container">
+                    <img src="/titulo.png" alt="PokeMemory" className="img-titulo" />
+                    <button className="btn-refresh" onClick={() => shuffleCards(true)}>
+                        <img src="/refresh.png" />
+                    </button>
+                </div>
+                <div className="recorde-badge">
+                    Nível: {faseAtual} | 🏆 Recorde: {recorde}
+                </div>
+            </header>
             <div className="card-grid">
-                {cartas.map(carta => (
-                    <div key={carta.id} className="card" onClick={() => handleChoice(carta)}>
-                        <img
-                            src={(carta === choice1 || carta === choice2 || carta.combinado) ? carta.src : '/verso.png'}
-                            alt="Carta" />
-                    </div>
-                ))}
-            </div>
-            <div className="stats">
-                <p>Turnos: {turno}</p>
-                {recorde > 0 && <p>Recorde: {recorde} turnos</p>}
+                {cartas.map(carta => {
+                    const isFlipped = carta === choice1 || carta === choice2 || carta.combinado;
+
+                    return (
+                        <div key={carta.id} className="card-container" onClick={() => handleChoice(carta)}>
+                            <div className={`card-inner ${isFlipped ? 'flipped' : ''}`}>
+                                <div className="card-front">
+                                    <img src={carta.src} alt="Pokemon" />
+                                </div>
+                                <div className="card-back">
+                                    <img src="/verso.png" alt="Verso" />
+                                </div>
+
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     )
