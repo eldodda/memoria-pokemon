@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Haptics, ImpactStyle } from "@capacitor/haptics";
+import { Haptics, ImpactStyle } from "@capacitor/haptics"; // Recursos do Capacitor para vibração.
 
-//  Array das cartas com suas imagens e propriedades para controle do jogo.
-const cartasIniciais = [{
+const cartasIniciais = [{       //  Array das cartas com suas imagens e propriedades para controle do jogo.
     src: '/assets/arts/1.png',
     cry: '/assets/cries/1.ogg',
     combinado: false
@@ -93,8 +92,7 @@ const cartasIniciais = [{
 },
 ]
 
-//  Função para gerar e embaralhar as cartas, usando estados (useState) para atualizar com o react.
-export const useGame = () => {
+export const useGame = () => {      // Motor lógico do jogo.
     const [disabled, setDisabled] = useState(false);
     const [cartas, setCartas] = useState([]);
     const [choice1, setChoice1] = useState(null);
@@ -104,98 +102,101 @@ export const useGame = () => {
         const salvo = localStorage.getItem('memoria_recorde');
         return salvo ? parseInt(salvo) : 0;
     });
-    const maxPares = 9;
 
-    const shuffleCards = (resetTotal = false) => {
+    const maxPares = 9; // Máximo de cartas na tela (9 pares = 18 cartas);
+
+    const prepFase = (resetTotal = false) => {  // Prepara a fase.
         if (resetTotal) {
             setFaseAtual(1);
             return;
         }
 
-        const quantPares = faseAtual <= 4 ? faseAtual + 1 : maxPares;
+        const quantPares = faseAtual <= 8 ? faseAtual + 1 : maxPares;   // Controla o progresso das fases.
+        const cartasSorteadas = [...cartasIniciais]                     // Separa cartas aleatórias para cada fase, diminuindo a repetição:
+            .sort(() => Math.random() - 0.5)                            // Embaralha;
+            .slice(0, quantPares);                                      // Separa a quantidade para a fase.
 
-        const cartasSorteadas = [...cartasIniciais]
-            .sort(() => Math.random() - 0.5)
-            .slice(0, quantPares)
+        const shuffled = [...cartasSorteadas, ...cartasSorteadas]        // Gera os pares e os prepara para a fase:
+            .sort(() => Math.random() - 0.5)                             // Embaralha;
+            .map((carta) => { return { ...carta, id: Math.random(), combinado: false } });  // Seta todas as cartas como 'não combinadas' (combinado: false).
 
-        const shuffled = [...cartasSorteadas, ...cartasSorteadas]
-            .sort(() => Math.random() - 0.5)
-            .map((carta) => { return { ...carta, id: Math.random(), combinado: false } });
-
-        setCartas(shuffled);
-        setChoice1(null);
-        setChoice2(null);
+        setCartas(shuffled);    // Prepara as cartas da fase;
+        setChoice1(null);       // Limpa a primeira escolha
+        setChoice2(null);       // e a segunda;
     }
 
-    const playSom = (caminhoAudio, volume) => {
-        if (!caminhoAudio) return;
+    const trataEscolha = (carta) => {
+        if (!disabled && carta.id !== choice1?.id && !carta.combinado) {
+            choice1 ? setChoice2(carta) : setChoice1(carta);
+        }
+    }
+
+    const resetTurno = () => {  // Função para resetar o turno:
+        setChoice1(null);           // Zera a escolha um
+        setChoice2(null);           // e a dois;
+        setDisabled(false);         // Destrava as cartas para novas escolhas.
+    }
+
+    const playSom = (caminhoAudio, volume) => { // Função para tocar os sons de acerto, erro e mudança de fase.
+        if (!caminhoAudio) return;  // Se o caminhoAudio não for fornecido, segue sem mesmo;
         const audio = new Audio(caminhoAudio);
         audio.volume = volume;
         audio.play();
-    };
+    }
 
     useEffect(() => {
-
-        if (choice1 && choice2) {
-            setDisabled(true);
-            if (choice1.src === choice2.src) {
-                playSom(choice1.cry, 1);
-                setCartas(escolhidas => {
-                    return escolhidas.map(carta => {
-                        if (carta.src === choice1.src) {
-                            return { ...carta, combinado: true };
-                        } else {
-                            Haptics.impact({ style: ImpactStyle.Light });
-                            return carta;
+        if (choice1 && choice2) {   // Se as duas escolhas já foram feitas,
+            setDisabled(true);      // trava as cartas, impedindo novas escolhas.
+            if (choice1.src === choice2.src) {                  // Se as escolhas forem iguais,
+                playSom(choice1.cry, 1);                // toca o som de acerto e
+                setCartas(escolhidas => {                       // pega as cartas escolhidas e
+                    return escolhidas.map(carta => {            // mapeia cada carta:
+                        if (carta.src === choice1.src) {            // Mais uma comparação para o .map(), e se confirmar,
+                            return { ...carta, combinado: true }   // registra que essas cartas já foram combinadas.
+                        } else {            // Senão,
+                            return carta;   // voltamos as cartas ao normal.
                         }
                     });
                 });
-                resetTurno();
-            } else {
-                setTimeout(() => resetTurno(), 1000);
-                playSom('/err.mp3', 1);
+                resetTurno();   // E resetamos o turno.
+            } else {                                            // Se as cartas não forem iguais (erro):
+                playSom('/err.mp3', 1),                         // Toca o som de erro.
+                    setTimeout(() => {
+                        resetTurno();                                   // Reseta o turno
+                        Haptics.impact({ style: ImpactStyle.Light })   // e vibra.
+                    },
+                        1000
+                    );
             }
         }
-    }, [choice1, choice2]);
+    }, [choice1, choice2]); // As variáveis a serem vigiadas pelo useEffect.
 
     useEffect(() => {
-        const ganhou = cartas.length > 0 && cartas.every(carta => carta.combinado);
-        if (ganhou) {
-            playSom('/lvl.mp3', 0.3);
+        const ganhou = cartas.length > 0 && cartas.every(carta => carta.combinado); // Condição de vitória: todas as cartas combinadas (combinado: true).
+        if (ganhou) {   // Se venceu:
             setTimeout(() => {
-                setFaseAtual(prev => {
-                    const novaFase = prev + 1;
-                    if (novaFase > recorde) {
-                        setRecorde(novaFase);
-                        localStorage.setItem('memoria_recorde', novaFase.toString());
+                setFaseAtual(prev => {          // Preparamos uma nova fase
+                    const novaFase = prev + 1;  // que é a fase atual + 1.
+                    if (novaFase > recorde) {                                   // Se a nova fase for maior que o recorde atual:
+                        setRecorde(novaFase);                                           // Ela passa a ser o novo recorde.
+                        localStorage.setItem('memoria_recorde', novaFase.toString());   // E o recorde é guardado no localStorage.
                     }
                     return novaFase;
                 });
-            }, 500);
+                playSom('/lvl.mp3', 1);   // E tocamos o som de vitória.
+            }, 700);
         }
     }, [cartas]);
 
     useEffect(() => {
-        shuffleCards();
+        prepFase(); // Sempre que faseAtual for atualizada, prepara a fase.
     }, [faseAtual]);
-
-    const handleChoice = (carta) => {
-        if (!disabled && carta.id !== choice1?.id && !carta.combinado) {
-            choice1 ? setChoice2(carta) : setChoice1(carta);
-        }
-    };
-
-    const resetTurno = () => {
-        setChoice1(null);
-        setChoice2(null);
-        setDisabled(false);
-    }
 
     return {
         cartas,
-        shuffleCards: () => shuffleCards(true),
+        prepFase,
         faseAtual,
-        handleChoice,
+        trataEscolha,
         choice1,
         choice2,
         recorde,
