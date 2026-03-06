@@ -106,7 +106,7 @@ export const useGame = () => {      // Motor lógico do jogo.
 				});
 				resetTurno();   // E resetamos o turno.
 			} else {                                            // Se as cartas não forem iguais (erro):
-				playSom("/err.mp3", 1),                         // Toca o som de erro.
+				playSom("err.mp3", 1),                         // Toca o som de erro.
 				setTimeout(() => {
 					resetTurno();                                   // Reseta o turno
 					Haptics.impact({ style: ImpactStyle.Light });   // e vibra.
@@ -129,7 +129,7 @@ export const useGame = () => {      // Motor lógico do jogo.
 					}
 					return novaFase;
 				});
-				playSom("/lvl.mp3", 1);   // E tocamos o som de vitória.
+				playSom("lvl.mp3", 1);   // E tocamos o som de vitória.
 			}, 700);
 		}
 	}, [cartas]);
