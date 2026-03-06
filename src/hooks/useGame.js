@@ -25,8 +25,8 @@ export const useGame = () => {      // Motor lógico do jogo.
 		const id = i + 1;			//	cartasIniciais agora cria um array puxando os arquivos diretamente da pasta,
 		return {					// me poupando de criar um array quilométrico para trazer os pokémon.
 			id_pokemon: id,
-			src: config.useSprites ? `/assets/sprites/${id}.png` : `/assets/arts/${id}.png`,
-			cry: config.useAnimeCries ? `/assets/animeCries/${id}.ogg` : `/assets/cries/${id}.ogg`,
+			src: config.useSprites ? `assets/sprites/${id}.png` : `assets/arts/${id}.png`,
+			cry: config.useAnimeCries ? `assets/animeCries/${id}.ogg` : `assets/cries/${id}.ogg`,
 			combinado: false
 		};
 	});
@@ -36,11 +36,11 @@ export const useGame = () => {      // Motor lógico do jogo.
 			prevCartas.map(carta => ({
 				...carta,
 				src: config.useSprites
-					? `/assets/sprites/${carta.id_pokemon}.png`
-					: `/assets/arts/${carta.id_pokemon}.png`,
+					? `assets/sprites/${carta.id_pokemon}.png`
+					: `assets/arts/${carta.id_pokemon}.png`,
 				cry: config.useAnimeCries
-					? `/assets/animeCries/${carta.id_pokemon}.ogg`
-					: `/assets/cries/${carta.id_pokemon}.ogg`
+					? `assets/animeCries/${carta.id_pokemon}.ogg`
+					: `assets/cries/${carta.id_pokemon}.ogg`
 			})),
 		);
 		setChoice1(null);
