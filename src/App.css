@@ -293,24 +293,19 @@ body {
 
 .footer-creditos {
   position: fixed;
-  /* Fixa no rodapé da tela */
   bottom: 10px;
   font-size: 0.7rem;
-  /* Tamanho pequeno e elegante */
   color: rgba(255, 255, 255, 0.6);
-  /* Branco translúcido para ser sutil */
   text-align: center;
   width: 100%;
   letter-spacing: 1px;
   text-transform: uppercase;
   pointer-events: none;
-  /* Garante que o clique passe através dele se necessário */
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .footer-creditos strong {
   color: var(--pk-yellow);
-  /* Usa o amarelo que definimos para o seu nome brilhar */
   font-weight: bold;
 }
 
