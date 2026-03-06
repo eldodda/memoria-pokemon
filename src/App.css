@@ -1,3 +1,11 @@
+@font-face {
+  font-family: PressStart;
+  src: url('./PS2P.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --pk-red: #ff0000;
   --pk-blue: #3b4cca;
@@ -33,6 +41,42 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  transition: filter 0.8s ease-in-out;
+}
+
+.App::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 20, 50, 0.4);
+  z-index: 999;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+
+.App.night-mode::after {
+  opacity: 1;
+}
+
+.App.night-mode {
+  filter: brightness(0.8) contrast(1.1);
+}
+
+.night-mode .card-front {
+  z-index: 1001;
+  filter: brightness(1.1);
+  transition: transform 0.2s, filter 0.5s;
+}
+
+.night-mode .card-front img {
+
+  filter: contrast(1.2) saturate(1.2) brightness(1.1);
+  filter: drop-shadow(0px 4px 6px rgba(255, 255, 255, 2));
 }
 
 .header-jogo {
@@ -52,6 +96,111 @@ body {
   height: 50px;
   width: auto;
 }
+
+.btn-config {
+  background: var(--pk-yellow);
+  border-color: var(--pk-blue);
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0px 7px rgba(0, 0, 0, 1);
+  transition: transform 0.2s;
+}
+
+.btn-config:active {
+  transform: scale(0.95);
+}
+
+.btn-config img {
+  width: 100%;
+  filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5));
+}
+
+.menu-config {
+  font-family: PressStart;
+  font-size: 13px;
+  position: absolute;
+  top: 70px;
+  background: white;
+  border: 10px, solid, #ff0000;
+  border-radius: 30px;
+  padding: 15px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 5px 5px 5px var(--bg-color);
+}
+
+.opcao {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.opcao button {
+  font-family: PressStart;
+  padding: 5px 10px;
+  border: 3px, solid, var(--pk-blue);
+  border-radius: 30px;
+  background: var(--pk-yellow);
+  cursor: pointer;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  transition: transform 0.2s;
+
+}
+
+.btn-drk-mode {
+  background: var(--pk-yellow);
+  border-color: var(--pk-blue);
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0px 7px rgba(0, 0, 0, 1);
+  transition: transform 0.2s;
+}
+
+.btn-drk-mode img {
+  width: 20px;
+  height: 20px;
+}
+
+.btn-drk-mode:active {
+  transform: scale(0.95);
+
+}
+
+.btn-fechar {
+  font-family: PressStart;
+  padding: 5px 10px;
+  border: 3px, solid, var(--pk-yellow);
+  border-radius: 30px;
+  background: var(--pk-red);
+  cursor: pointer;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  transition: transform 0.2s;
+
+}
+
+.opcao button:active,
+.btn-fechar:active {
+  transform: scale(0.95);
+
+}
+
 
 .btn-refresh {
   background: var(--pk-yellow);
@@ -136,28 +285,33 @@ body {
 }
 
 .card-front img {
-    filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 2));
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+  filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 2));
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .footer-creditos {
-    position: fixed; /* Fixa no rodapé da tela */
-    bottom: 10px;
-    font-size: 0.7rem; /* Tamanho pequeno e elegante */
-    color: rgba(255, 255, 255, 0.6); /* Branco translúcido para ser sutil */
-    text-align: center;
-    width: 100%;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    pointer-events: none; /* Garante que o clique passe através dele se necessário */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  position: fixed;
+  /* Fixa no rodapé da tela */
+  bottom: 10px;
+  font-size: 0.7rem;
+  /* Tamanho pequeno e elegante */
+  color: rgba(255, 255, 255, 0.6);
+  /* Branco translúcido para ser sutil */
+  text-align: center;
+  width: 100%;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  pointer-events: none;
+  /* Garante que o clique passe através dele se necessário */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .footer-creditos strong {
-    color: var(--pk-yellow); /* Usa o amarelo que definimos para o seu nome brilhar */
-    font-weight: bold;
+  color: var(--pk-yellow);
+  /* Usa o amarelo que definimos para o seu nome brilhar */
+  font-weight: bold;
 }
 
 @media (max-width: 400px) {
