@@ -10,12 +10,12 @@ function App() {
         <div className={`App ${config.darkMode ? 'night-mode' : ''}`}>
             <header className="header-jogo">
                 <div className="titulo-container">
-                    <img src="/titulo.png" alt="Pokemoria" className="img-titulo" />
+                    <img src="titulo.png" alt="Pokemoria" className="img-titulo" />
                     <button className="btn-config" onClick={() => setMenuAberto(!menuAberto)}>
-                        <img src="/sets.png" alt="Config" />
+                        <img src="sets.png" alt="Config" />
                     </button>
                     <button className="btn-refresh" onClick={() => prepFase(true)}>
-                        <img src="/refresh.png" alt="Reset" />
+                        <img src="refresh.png" alt="Reset" />
                     </button>
                 </div>
                 <div className="recorde-badge">
@@ -40,7 +40,7 @@ function App() {
                     </div>
 
                     <button className="btn-drk-mode" onClick={() => setConfig({...config, darkMode: config.darkMode ? false : true})}>
-                        <img src={config.darkMode ? "/sun.png" : "/moon.png"} alt="Night Mode" />
+                        <img src={config.darkMode ? "sun.png" : "moon.png"} alt="Night Mode" />
                     </button>
 
                     <button className="btn-fechar" onClick={() => setMenuAberto(false)}>Voltar</button>
@@ -58,7 +58,7 @@ function App() {
                                     <img src={carta.src} alt="Pokemon" />
                                 </div>
                                 <div className="card-back">
-                                    <img src="/verso.png" alt="Verso" />
+                                    <img src="verso.png" alt="Verso" />
                                 </div>
 
                             </div>
