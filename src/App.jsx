@@ -55,7 +55,10 @@ function App() {
                         <div key={carta.id} className="card-container" onClick={() => trataEscolha(carta)}>
                             <div className={`card-inner ${isFlipped ? 'flipped' : ''}`}>
                                 <div className="card-front">
-                                    <img src={carta.src} alt="Pokemon" />
+                                <img 
+                                    src={carta.src} 
+                                    alt="Pokemon" 
+                                    className={config.useSprites ? "pixel-art" : "smooth-art"}/>
                                 </div>
                                 <div className="card-back">
                                     <img src="verso.png" alt="Verso" />
