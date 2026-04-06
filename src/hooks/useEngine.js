@@ -1,28 +1,22 @@
 import { useEffect, useState } from "react";
 import { Haptics, ImpactStyle } from "@capacitor/haptics"; // Recursos do Capacitor para vibração.
+import { useSettings } from "./useSettings";
+import { useAudio } from "./useAudio";
 
 export const useGame = () => {      // Motor lógico do jogo.
+	const { config, setConfig, recorde, atualizarRecorde } = useSettings();
+    const { playSom } = useAudio();
+
 	const [disabled, setDisabled] = useState(false);
 	const [cartas, setCartas] = useState([]);
 	const [choice1, setChoice1] = useState(null);
 	const [choice2, setChoice2] = useState(null);
 	const [faseAtual, setFaseAtual] = useState(1);
-	const [recorde, setRecorde] = useState(() => {
-		const salvo = localStorage.getItem("recorde-salvo");
-		return salvo ? parseInt(salvo) : 0;
-	});
-	const [config, setConfig] = useState(() => {
-		const configSalva = localStorage.getItem("config-salva");
-		return configSalva ? JSON.parse(configSalva) : {
-			useSprites: false,
-			useAnimeCries: false,
-			nightMode: false,
-		};
-	});
 
 	const totalPokemon = 151;
+	
 	const cartasIniciais = Array.from({ length: totalPokemon }, (_, i) => {
-		const id = i + 1;			//	cartasIniciais agora cria um array puxando os arquivos diretamente da pasta,
+		const id = i + 1;			//	cartasIniciais cria um array puxando os arquivos diretamente da pasta,
 		return {					// me poupando de criar um array quilométrico para trazer os pokémon.
 			id_pokemon: id,
 			src: config.useSprites ? `assets/sprites/${id}.png` : `assets/arts/${id}.png`,
@@ -82,14 +76,6 @@ export const useGame = () => {      // Motor lógico do jogo.
 		setDisabled(false);         // Destrava as cartas para novas escolhas.
 	};
 
-	const playSom = (caminhoAudio, volume) => { // Função para tocar os sons de acerto, erro e mudança de fase.
-		if (!caminhoAudio) return;  // Se o caminhoAudio não for fornecido, segue sem mesmo;
-		const atualiza = `${caminhoAudio}?v=${new Date().getTime()}`;
-		const audio = new Audio(atualiza);
-		audio.volume = volume;
-		audio.play();
-	};
-
 	useEffect(() => {
 		if (choice1 && choice2) {   // Se as duas escolhas já foram feitas,
 			setDisabled(true);      // trava as cartas, impedindo novas escolhas.
@@ -123,10 +109,7 @@ export const useGame = () => {      // Motor lógico do jogo.
 			setTimeout(() => {
 				setFaseAtual(prev => {          // Preparamos uma nova fase
 					const novaFase = prev + 1;  // que é a fase atual + 1.
-					if (novaFase > recorde) {                                   // Se a nova fase for maior que o recorde atual:
-						setRecorde(novaFase);                                           // Ela passa a ser o novo recorde.
-						localStorage.setItem("recorde-salvo", novaFase.toString());   // E o recorde é guardado no localStorage.
-					}
+					atualizarRecorde(novaFase);
 					return novaFase;
 				});
 				playSom("lvl.mp3", 1);   // E tocamos o som de vitória.

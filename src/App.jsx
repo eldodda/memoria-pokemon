@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useGame } from "./hooks/useGame.js";
+import { useState } from "react";
+import { useGame } from "./hooks/useEngine.js";
 import './App.css';
 
 function App() {
